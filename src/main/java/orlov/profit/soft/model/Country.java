@@ -1,4 +1,4 @@
-package orlov.profit.soft;
+package orlov.profit.soft.model;
 
 import lombok.Builder;
 import lombok.Getter;
