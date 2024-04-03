@@ -1,4 +1,4 @@
-package orlov.profit.soft;
+package orlov.profit.soft.model;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.Year;
+import java.util.List;
 import java.util.Objects;
 
 @Setter
@@ -15,21 +17,25 @@ public class City {
 
     private String cityName;
 
-    private int cityPopulation;
-
-    private double cityArea;
-
-    private LocalDate foundedAt;
-
     private Country country;
 
+    private int cityPopulation;
+
+    //kilometers
+    private double cityArea;
+
+    private Year foundedAt;
+
+    private List<String> languages;
+
     @Builder
-    public City(String cityName, int cityPopulation, double cityArea, LocalDate foundedAt, Country country) {
+    public City(String cityName, Country country, int cityPopulation, double cityArea, Year foundedAt, List<String> languages) {
         this.cityName = cityName;
+        this.country = country;
         this.cityPopulation = cityPopulation;
         this.cityArea = cityArea;
         this.foundedAt = foundedAt;
-        this.country = country;
+        this.languages = languages;
     }
 
     @Override
@@ -42,7 +48,9 @@ public class City {
         if (cityPopulation != city.cityPopulation) return false;
         if (Double.compare(cityArea, city.cityArea) != 0) return false;
         if (!Objects.equals(cityName, city.cityName)) return false;
-        return Objects.equals(foundedAt, city.foundedAt);
+        if (!Objects.equals(country != null ? country.getCountryName() : null, city.country != null ? city.country.getCountryName() : null)) return false;
+        if (!Objects.equals(foundedAt, city.foundedAt)) return false;
+        return Objects.equals(languages, city.languages);
     }
 
     @Override
@@ -54,6 +62,8 @@ public class City {
         temp = Double.doubleToLongBits(cityArea);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + (foundedAt != null ? foundedAt.hashCode() : 0);
+        result = 31 * result + (languages != null ? languages.hashCode() : 0);
+        result = 31 * result + (country != null ? country.getCountryName().hashCode() : 0);
         return result;
     }
 
@@ -61,10 +71,11 @@ public class City {
     public String toString() {
         return "City{" +
                 "cityName='" + cityName + '\'' +
+                ", country=" + (country != null ? country.getCountryName() : null) +
                 ", cityPopulation=" + cityPopulation +
                 ", cityArea=" + cityArea +
                 ", foundedAt=" + foundedAt +
-                ", country=" + country.getCountryName() +
+                ", languages=" + languages +
                 '}';
     }
 }
