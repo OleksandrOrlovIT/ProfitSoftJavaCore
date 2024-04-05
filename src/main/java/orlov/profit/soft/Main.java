@@ -5,6 +5,7 @@ import orlov.profit.soft.model.Country;
 import orlov.profit.soft.util.json.JSONParser;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Year;
@@ -24,6 +25,16 @@ public class Main {
                 .languages(List.of("Ukranian", "English"))
                 .build();
 
+
+        City kiyv = City.builder()
+                .cityName("Kiyv")
+                .country(ukraine)
+                .cityPopulation(2_887_974)
+                .cityArea(839.0d)
+                .foundedAt(Year.of(482))
+                .languages(List.of("Ukrainian", "English"))
+                .build();
+
         Country USA = Country.builder().countryName("USA").build();
 
         City nyc = City.builder()
@@ -35,15 +46,52 @@ public class Main {
                 .languages(List.of("English", "Spanish", "Chinese"))
                 .build();
 
-        String kharkivLine = checkJSONParser(kharkiv);
-        String nycLine = checkJSONParser(nyc);
+        City la = City.builder()
+                .cityName("Los Angeles")
+                .country(USA)
+                .cityPopulation(3_971_883)
+                .cityArea(1_302.0d)
+                .foundedAt(Year.of(1781))
+                .languages(List.of("English", "Spanish", "Chinese", "Korean"))
+                .build();
 
-        writeLineToFile("[", "src/main/resources/cities10000.json");
-        for(int i = 0; i < 10_000; i++) {
-            writeLineToFile(kharkivLine + ",", "src/main/resources/cities10000.json");
-            writeLineToFile(nycLine + ",", "src/main/resources/cities10000.json");
+        City chicago = City.builder()
+                .cityName("Chicago")
+                .country(USA)
+                .cityPopulation(2_693_976)
+                .cityArea(606.1d)
+                .foundedAt(Year.of(1837))
+                .languages(List.of("English", "Spanish", "Polish"))
+                .build();
+
+        String kharkivLine = checkJSONParser(kharkiv);
+        String kiyvLine = checkJSONParser(kiyv);
+        String nycLine = checkJSONParser(nyc);
+        String laLine = checkJSONParser(la);
+        String chicagoLine = checkJSONParser(chicago);
+
+        String filePath = "src/main/resources/citiesFiveThousand.json";
+
+        File file = new File(filePath);
+        if (file.exists()) {
+            if (file.delete()) {
+                System.out.println("File deleted successfully.");
+            }
         }
-        writeLineToFile("]", "src/main/resources/cities10000.json");
+
+        writeLineToFile("[", filePath);
+        for(int i = 0; i < 100_000; i++) {
+            writeLineToFile(kharkivLine + ",", filePath);
+            writeLineToFile(kiyvLine + ",", filePath);
+            writeLineToFile(nycLine + ",", filePath);
+            writeLineToFile( laLine + ",", filePath);
+            if(i == 99_999){
+                writeLineToFile(chicagoLine, filePath);
+            } else {
+                writeLineToFile(chicagoLine + ",", filePath);
+            }
+        }
+        writeLineToFile("]", filePath);
     }
 
     public static String checkJSONParser(City city) throws IOException {

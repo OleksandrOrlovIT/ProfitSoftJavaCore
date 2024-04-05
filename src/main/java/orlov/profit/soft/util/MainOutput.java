@@ -6,26 +6,57 @@ import orlov.profit.soft.util.json.InputStreamJsonArrayStreamDataSupplier;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.concurrent.*;
 
 public class MainOutput {
     public static void main(String[] args) {
-        // Path to your JSON file
-        String filePath = "src/main/resources/cities10000.json";
+        Instant start = Instant.now();
 
-        // Read JSON file as an InputStream*
-        int kharkivNameCount = 0;
-        for (int i = 0; i < 100; i++) {
-            try (InputStream inputStream = new FileInputStream(filePath)) {
-                // Create InputStreamJsonArrayStreamDataSupplier with City.class
-                InputStreamJsonArrayStreamDataSupplier<City> dataSupplier
-                        = new InputStreamJsonArrayStreamDataSupplier<>(City.class, inputStream);
+        String filePath = "src/main/resources/citiesFiveThousand.json";
 
-                kharkivNameCount += (int) dataSupplier.get().filter(e -> e.getCityName().equals("Kharkiv")).count();
-            } catch (IOException e) {
-                e.printStackTrace();
+        ForkJoinPool forkJoinPool = new ForkJoinPool(8);
+
+        CompletableFuture<ConcurrentHashMap<String, Integer>> cityNamesFuture = CompletableFuture.supplyAsync(() -> {
+            ConcurrentHashMap<String, Integer> map = new ConcurrentHashMap<>();
+
+            for (int i = 0; i < 20; i++) {
+                try (InputStream inputStream = new FileInputStream(filePath)) {
+                    InputStreamJsonArrayStreamDataSupplier<City> dataSupplier
+                            = new InputStreamJsonArrayStreamDataSupplier<>(City.class, inputStream);
+                    readCityNames(dataSupplier, map);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+            return map;
+        }, forkJoinPool);
+
+        // Handling the completion of the asynchronous computation
+        cityNamesFuture.thenAccept(map -> {
+            System.out.println(map);
+            Instant finish = Instant.now();
+            long timeElapsed = Duration.between(start, finish).toMillis();
+            System.out.println(timeElapsed);
+        });
+
+        // Waiting for completion
+        try {
+            cityNamesFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
         }
 
-        System.out.println(kharkivNameCount);
+        // Shut down the ForkJoinPool
+        forkJoinPool.shutdown();
+    }
+
+    public static void readCityNames(InputStreamJsonArrayStreamDataSupplier<City> cityStream, ConcurrentHashMap<String, Integer> map) {
+        cityStream.get()
+                .parallel()
+                .forEach(e -> {
+                    map.merge(e.getCityName(), 1, Integer::sum);
+                });
     }
 }

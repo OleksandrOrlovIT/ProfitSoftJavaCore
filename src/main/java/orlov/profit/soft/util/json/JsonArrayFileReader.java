@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class JsonArrayFileReader {
     public static void main(String[] args) {
-        File file = new File("src/main/resources/cities10000.json");
+        File file = new File("src/main/resources/cities20000.json");
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {

@@ -3,9 +3,12 @@ package orlov.profit.soft.util.json;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
+import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -37,7 +40,7 @@ public class InputStreamJsonArrayStreamDataSupplier<T> implements Supplier<Strea
     public Stream<T> get() {
         try {
             return StreamSupport.stream(
-                    Spliterators.spliteratorUnknownSize(jsonParser.readValuesAs(type), 0), false)
+                    Spliterators.spliteratorUnknownSize(jsonParser.readValuesAs(type), 0), true)
                     .onClose(() -> {
                         try {
                             data.close();
@@ -49,4 +52,5 @@ public class InputStreamJsonArrayStreamDataSupplier<T> implements Supplier<Strea
             throw new RuntimeException(e);
         }
     }
+
 }
