@@ -18,11 +18,7 @@ public class PopulateJSONCities {
     private static final Country germany = Country.builder().countryName("Germany").build();
     private static final Country france = Country.builder().countryName("France").build();
 
-
-    public static void main(String[] args) throws IOException {
-
-        String filePath = "src/main/resources/json/german_french_cities.json";
-
+    public static void populateFileWithCities(String filePath, int times, List<City> cities) throws IOException {
         File file = new File(filePath);
         if (file.exists()) {
             if (file.delete()) {
@@ -30,9 +26,9 @@ public class PopulateJSONCities {
             }
         }
 
-        List<String> lines = getStringJsons(getBerlin(), getMunich(), getParis(), getLyon());
+        List<String> lines = getStringJsons(cities);
 
-        writeToFile(lines, 20000, filePath);
+        writeToFile(lines, times, filePath);
     }
 
     public static void writeToFile(List<String> lines, int times, String filePath){
@@ -66,7 +62,7 @@ public class PopulateJSONCities {
         }
     }
 
-    private static List<String> getStringJsons(City ... cities) throws IOException {
+    private static List<String> getStringJsons(List<City> cities) throws IOException {
         JSONParser jsonParser = new JSONParser();
 
         List<String> citiesJsons = new ArrayList<>();
@@ -78,7 +74,7 @@ public class PopulateJSONCities {
         return citiesJsons;
     }
 
-    private static City getKiyv(){
+    public static City getKiyv(){
         return City.builder()
                 .cityName("Kiyv")
                 .country(ukraine)
@@ -89,7 +85,7 @@ public class PopulateJSONCities {
                 .build();
     }
 
-    private static City getKharkiv(){
+    public static City getKharkiv(){
         return City.builder()
                 .cityName("Kharkiv")
                 .country(ukraine)
@@ -100,7 +96,7 @@ public class PopulateJSONCities {
                 .build();
     }
 
-    private static City getNYC(){
+    public static City getNYC(){
         return City.builder()
                 .cityName("New York")
                 .country(USA)
@@ -111,7 +107,7 @@ public class PopulateJSONCities {
                 .build();
     }
 
-    private static City getLA(){
+    public static City getLA(){
         return City.builder()
                 .cityName("Los Angeles")
                 .country(USA)
@@ -122,7 +118,7 @@ public class PopulateJSONCities {
                 .build();
     }
 
-    private static City getChicago(){
+    public static City getChicago(){
         return City.builder()
                 .cityName("Chicago")
                 .country(USA)
@@ -133,7 +129,7 @@ public class PopulateJSONCities {
                 .build();
     }
 
-    private static City getBerlin(){
+    public static City getBerlin(){
         return City.builder()
                 .cityName("Berlin")
                 .country(germany)
@@ -144,7 +140,7 @@ public class PopulateJSONCities {
                 .build();
     }
 
-    private static City getMunich() {
+    public static City getMunich() {
         return City.builder()
                 .cityName("Munich")
                 .country(germany)
@@ -155,7 +151,7 @@ public class PopulateJSONCities {
                 .build();
     }
 
-    private static City getParis(){
+    public static City getParis(){
         return City.builder()
                 .cityName("Paris")
                 .country(france)
@@ -166,7 +162,7 @@ public class PopulateJSONCities {
                 .build();
     }
 
-    private static City getLyon(){
+    public static City getLyon(){
         return City.builder()
                 .cityName("Lyon")
                 .country(france)
