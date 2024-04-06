@@ -1,34 +1,55 @@
 package orlov.profit.soft;
 
-import orlov.profit.soft.model.City;
-import orlov.profit.soft.model.Country;
-import orlov.profit.soft.util.json.JSONParser;
+import orlov.profit.soft.util.xml.XMLConverter;
 
-import java.io.IOException;
-import java.time.Year;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        Country country = Country.builder().countryName("Ukraine").build();
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Welcome to JSON file to XML statistics application");
+        System.out.println("Please input number of threads from 1 to 8: ");
+        int threads = 8;
+        try {
+            threads = scanner.nextInt();
+        } catch (Exception e){
+            System.out.println("Wrong input number of threads should be a number from 1 to 8\n" +
+                    "Using default value of 8");
+        } finally {
+            scanner.nextLine();
+        }
 
-        City city = City.builder()
-                .cityName("Kharkiv")
-                .country(country)
-                .cityPopulation(1430885)
-                .cityArea(31400.0d)
-                .foundedAt(Year.of(1654))
-                .languages(List.of("Ukranian", "English"))
-                .build();
+        System.out.println("Please input directory path (default = src/main/resources/json): ");
+        String dirPath = scanner.nextLine();
 
-        checkJSONParser(city);
-        checkJSONParser(city);
+        System.out.println("Please input field names separated by comma to get statistics by them. " +
+                "Example for all fields:\ncityName,country,cityPopulation,cityArea,foundedAt,languages");
+        String line = scanner.nextLine().trim();
+        List<String> fieldNames = clearWrongFieldNames(line.split(","));
+
+        XMLConverter.convertMapsToXMLStats(threads, dirPath, fieldNames);
     }
 
-    public static void checkJSONParser(City city) throws IOException {
-        JSONParser jsonParser = new JSONParser();
-        System.out.println(jsonParser.createCityJson(city));
+    public static List<String> clearWrongFieldNames(String[] fields) {
+        List<String> validFields = new ArrayList<>();
 
-        System.out.println(jsonParser.createCityJson(city));
+        for (String field : fields) {
+            if (isValidField(field)) {
+                validFields.add(field);
+            }
+        }
+
+        return validFields;
+    }
+
+    private static boolean isValidField(String fieldName) {
+        return fieldName.equals("cityName") ||
+                fieldName.equals("country") ||
+                fieldName.equals("cityPopulation") ||
+                fieldName.equals("cityArea") ||
+                fieldName.equals("foundedAt") ||
+                fieldName.equals("languages");
     }
 }

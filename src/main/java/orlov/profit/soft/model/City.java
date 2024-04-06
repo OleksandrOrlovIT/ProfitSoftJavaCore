@@ -1,11 +1,13 @@
 package orlov.profit.soft.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import orlov.profit.soft.util.json.deserializer.CountryDeserializer;
+import orlov.profit.soft.util.json.deserializer.YearDeserializer;
 
-import java.time.LocalDate;
 import java.time.Year;
 import java.util.List;
 import java.util.Objects;
@@ -17,6 +19,7 @@ public class City {
 
     private String cityName;
 
+    @JsonDeserialize(using = CountryDeserializer.class)
     private Country country;
 
     private int cityPopulation;
@@ -24,6 +27,7 @@ public class City {
     //kilometers
     private double cityArea;
 
+    @JsonDeserialize(using = YearDeserializer.class)
     private Year foundedAt;
 
     private List<String> languages;
