@@ -15,17 +15,17 @@ import java.util.concurrent.ForkJoinPool;
 public class JSONParserV2 {
 
     public static void main(String[] args) {
-        String filePath = "src/main/resources/cities.json";
-        runInParallel(8, filePath);
+        String filePath = "src/main/resources/citiesFiveThousand.json";
+        processResult(runInParallel(8, filePath));
     }
 
-    public static void runInParallel(int numberOfThreads, String filePath){
+    public static CompletableFuture<ConcurrentHashMap<String, ConcurrentHashMap<String, Integer>>> runInParallel
+            (int numberOfThreads, String filePath) {
         ForkJoinPool forkJoinPool = new ForkJoinPool(numberOfThreads);
 
         try {
-            processResult(readCityStatsAsync(filePath, forkJoinPool,
-                    List.of("cityName", "cityPopulation", "cityArea", "foundedAt", "countryName", "languages")));
-
+            return readCityStatsAsync(filePath, forkJoinPool,
+                    List.of("cityName", "cityPopulation", "cityArea", "foundedAt", "countryName", "languages"));
         } finally {
             shutdownForkJoinPool(forkJoinPool);
         }
