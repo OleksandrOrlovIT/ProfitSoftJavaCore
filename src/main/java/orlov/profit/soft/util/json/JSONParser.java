@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Deprecated
 public class JSONParser {
 
     private final JsonFactory jsonFactory;
