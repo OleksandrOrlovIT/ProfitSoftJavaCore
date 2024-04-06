@@ -67,7 +67,7 @@ public class City {
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + (foundedAt != null ? foundedAt.hashCode() : 0);
         result = 31 * result + (languages != null ? languages.hashCode() : 0);
-        result = 31 * result + (country != null ? country.getCountryName().hashCode() : 0);
+        result = 31 * result + (country != null && country.getCountryName() != null ? country.getCountryName().hashCode() : 0);
         return result;
     }
 

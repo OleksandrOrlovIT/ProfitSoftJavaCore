@@ -26,7 +26,7 @@ class JSONParserTest {
     }
 
     @BeforeEach
-    void setUpCityAndCountry(){
+    void setUpCityAndCountryTest(){
         ukraine = Country.builder().countryName("Ukraine").build();
 
         kharkiv = City.builder()
@@ -42,7 +42,7 @@ class JSONParserTest {
     }
 
     @Test
-    void createCityJson_ValidCity() throws IOException {
+    void createCityJson_ValidCityTest() throws IOException {
         String expected = "{\"cityName\":\"Kharkiv\",\"country\":\"Ukraine\",\"cityPopulation\":1430885," +
                 "\"cityArea\":31400.0,\"foundedAt\":\"1654\",\"languages\":[\"Ukranian\",\"English\"]}";
 
@@ -50,13 +50,13 @@ class JSONParserTest {
     }
 
     @Test
-    void createCityJson_NullCity() {
+    void createCityJson_NullCityTest() {
         var e = assertThrows(NullPointerException.class, () -> jsonParser.createCityJson(null));
         assertEquals("City can't be null", e.getMessage());
     }
 
     @Test
-    void createCityJson_CityEmptyFields() throws IOException {
+    void createCityJson_CityEmptyFieldsTest() throws IOException {
         String expected = "{\"cityName\":null,\"country\":null,\"cityPopulation\":0," +
                 "\"cityArea\":0.0,\"foundedAt\":null,\"languages\":[]}";
 
@@ -64,7 +64,7 @@ class JSONParserTest {
     }
 
     @Test
-    void getCityFromJson_ValidJSON() {
+    void getCityFromJson_ValidJSONTest() {
         String json = "{\"cityName\":\"Kharkiv\",\"country\":\"Ukraine\",\"cityPopulation\":1430885," +
                 "\"cityArea\":31400.0,\"foundedAt\":\"1654\",\"languages\":[\"Ukranian\",\"English\"]}";
 
@@ -75,14 +75,14 @@ class JSONParserTest {
     }
 
     @Test
-    void getCityFromJson_EmptyJson() {
+    void getCityFromJson_EmptyJsonTest() {
         String json = "{}";
 
         assertEquals(emptyCity, jsonParser.getCityFromJson(json));
     }
 
     @Test
-    void getCityFromJson_NullFieldsJson() {
+    void getCityFromJson_NullFieldsJsonTest() {
         String json = "{\"cityName\":\"null\",\"countryName\":\"null\"" +
                 ",\"cityPopulation\":null,\"cityArea\":null,\"foundedAt\":\"null\",\"languages\":[]}}";
 
@@ -92,7 +92,7 @@ class JSONParserTest {
     }
 
     @Test
-    void getCityFromJson_BrokenJson() {
+    void getCityFromJson_BrokenJsonTest() {
         String json = "\"cityName\":\"null\"[]";
 
         City city2 = jsonParser.getCityFromJson(json);
@@ -101,7 +101,7 @@ class JSONParserTest {
     }
 
     @Test
-    void getCityFromJson_BrokenJson_BrokenArray() {
+    void getCityFromJson_BrokenJson_BrokenArrayTest() {
         String json = "{\"cityName\":\"Kharkiv\",\"countryName\":\"Ukraine\",\"cityPopulation\":1430885," +
                 "\"cityArea\":31400.0,\"foundedAt\":\"1654\",\"languages\":[\"Ukranian\",";
 
