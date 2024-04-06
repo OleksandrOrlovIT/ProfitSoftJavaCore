@@ -15,7 +15,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PopulateJSONCitiesTest {
-    private static final String resourcesPath = "src/test/resources/";
+    private static final String resourcesPath = "src/test/testDir/";
     private static final JSONParser jsonParser = new JSONParser();
 
     @BeforeAll
