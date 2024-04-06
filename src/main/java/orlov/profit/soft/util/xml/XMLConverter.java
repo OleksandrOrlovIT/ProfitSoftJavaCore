@@ -8,19 +8,16 @@ import orlov.profit.soft.util.xml.model.Item;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class XMLConverter {
 
-    public static void main(String[] args) {
-        convertMapsToXMLStats(8, "src/main/resources/cities20000.json");
-    }
-
-    public static void convertMapsToXMLStats(int numberOfThreads, String inputFilePath) {
+    public static void convertMapsToXMLStats(int numberOfThreads, String directoryPath, List<String> fieldNames) {
         CompletableFuture<ConcurrentHashMap<String, ConcurrentHashMap<String, Integer>>> futureMap =
-                JSONParserV2.runInParallel(numberOfThreads, inputFilePath);
+                JSONParserV2.runInParallel(numberOfThreads, directoryPath, fieldNames);
         try {
             ConcurrentHashMap<String, ConcurrentHashMap<String, Integer>> result = futureMap.get();
             for (Map.Entry<String, ConcurrentHashMap<String, Integer>> entry : result.entrySet()) {

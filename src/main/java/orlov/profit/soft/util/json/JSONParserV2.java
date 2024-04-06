@@ -2,9 +2,11 @@ package orlov.profit.soft.util.json;
 
 import orlov.profit.soft.model.City;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -14,31 +16,38 @@ import java.util.concurrent.ForkJoinPool;
 
 public class JSONParserV2 {
 
-    public static void main(String[] args) {
-        String filePath = "src/main/resources/citiesFiveThousand.json";
-        processResult(runInParallel(8, filePath));
-    }
-
     public static CompletableFuture<ConcurrentHashMap<String, ConcurrentHashMap<String, Integer>>> runInParallel
-            (int numberOfThreads, String filePath) {
+            (int numberOfThreads, String directoryPath, List<String> fieldNames) {
         ForkJoinPool forkJoinPool = new ForkJoinPool(numberOfThreads);
 
         try {
-            return readCityStatsAsync(filePath, forkJoinPool,
-                    List.of("cityName", "cityPopulation", "cityArea", "foundedAt", "countryName", "languages"));
+            return readCityStatsAsync(directoryPath, forkJoinPool, fieldNames);
         } finally {
             shutdownForkJoinPool(forkJoinPool);
         }
     }
 
     private static CompletableFuture<ConcurrentHashMap<String, ConcurrentHashMap<String, Integer>>> readCityStatsAsync(
-            String filePath, ForkJoinPool forkJoinPool, List<String> fields) {
-        return CompletableFuture.supplyAsync(() -> readCityStats(getDataSupplier(filePath), fields), forkJoinPool);
+            String directoryPath, ForkJoinPool forkJoinPool, List<String> fields) {
+        List<CompletableFuture<ConcurrentHashMap<String, ConcurrentHashMap<String, Integer>>>> futures = new ArrayList<>();
+        File directory = new File(directoryPath);
+        File[] files = directory.listFiles((dir, name) -> name.endsWith(".json"));
+
+        if (files != null) {
+            for (File file : files) {
+                futures.add(CompletableFuture.supplyAsync(() -> readCityStats(getDataSupplier(file), fields), forkJoinPool));
+            }
+        }
+
+        return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+                .thenApply(v -> futures.stream()
+                        .map(CompletableFuture::join)
+                        .reduce(new ConcurrentHashMap<>(), JSONParserV2::mergeMaps));
     }
 
-    private static InputStreamJsonArrayStreamDataSupplier<City> getDataSupplier(String filepath) {
+    private static InputStreamJsonArrayStreamDataSupplier<City> getDataSupplier(File file) {
         try {
-            InputStream inputStream = new FileInputStream(filepath);
+            InputStream inputStream = new FileInputStream(file);
             return new InputStreamJsonArrayStreamDataSupplier<>(City.class, inputStream);
         } catch (IOException e) {
             throw new RuntimeException("Error reading city names", e);
@@ -95,7 +104,7 @@ public class JSONParserV2 {
             case "foundedAt" -> {
                 fieldStats.get(field).merge(String.valueOf(city.getFoundedAt()), 1, Integer::sum);
             }
-            case "countryName" -> {
+            case "country" -> {
                 fieldStats.get(field).merge(String.valueOf(city.getCountry().getCountryName()), 1, Integer::sum);
             }
             case "languages" -> {
@@ -103,5 +112,15 @@ public class JSONParserV2 {
                         fieldStats.get(field).merge(language, 1, Integer::sum));
             }
         }
+    }
+
+    private static ConcurrentHashMap<String, ConcurrentHashMap<String, Integer>> mergeMaps(
+            ConcurrentHashMap<String, ConcurrentHashMap<String, Integer>> map1,
+            ConcurrentHashMap<String, ConcurrentHashMap<String, Integer>> map2) {
+        map2.forEach((key, value) -> map1.merge(key, value, (v1, v2) -> {
+            v1.forEach((k, v) -> value.merge(k, v, Integer::sum));
+            return value;
+        }));
+        return map1;
     }
 }
