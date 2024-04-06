@@ -21,15 +21,19 @@ public class Main {
             scanner.nextLine();
         }
 
-        System.out.println("Please input directory path (default = src/main/resources/json): ");
-        String dirPath = scanner.nextLine();
+        System.out.println("Please input inputDirectory path with your .json files (default = src/main/resources/json): ");
+        String inputDirPath = scanner.nextLine();
 
         System.out.println("Please input field names separated by comma to get statistics by them. " +
                 "Example for all fields:\ncityName,country,cityPopulation,cityArea,foundedAt,languages");
         String line = scanner.nextLine().trim();
         List<String> fieldNames = clearWrongFieldNames(line.split(","));
 
-        XMLConverter.convertMapsToXMLStats(threads, dirPath, fieldNames);
+        System.out.println("Please input directory path where you want to save your xml files" +
+                " (default = src/main/resources/xml): ");
+        String outputDirPath = scanner.nextLine();
+
+        XMLConverter.convertMapsToXMLStats(threads, inputDirPath, fieldNames, outputDirPath);
     }
 
     public static List<String> clearWrongFieldNames(String[] fields) {
@@ -44,7 +48,7 @@ public class Main {
         return validFields;
     }
 
-    private static boolean isValidField(String fieldName) {
+    static boolean isValidField(String fieldName) {
         return fieldName.equals("cityName") ||
                 fieldName.equals("country") ||
                 fieldName.equals("cityPopulation") ||

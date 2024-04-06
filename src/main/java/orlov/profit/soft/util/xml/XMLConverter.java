@@ -15,25 +15,26 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class XMLConverter {
 
-    public static void convertMapsToXMLStats(int numberOfThreads, String directoryPath, List<String> fieldNames) {
+    public static void convertMapsToXMLStats(int numberOfThreads, String inputDirectoryPath,
+                                             List<String> fieldNames, String outputDirectoryPath) {
         CompletableFuture<ConcurrentHashMap<String, ConcurrentHashMap<String, Integer>>> futureMap =
-                JSONParserV2.runInParallel(numberOfThreads, directoryPath, fieldNames);
+                JSONParserV2.runInParallel(numberOfThreads, inputDirectoryPath, fieldNames);
         try {
             ConcurrentHashMap<String, ConcurrentHashMap<String, Integer>> result = futureMap.get();
             for (Map.Entry<String, ConcurrentHashMap<String, Integer>> entry : result.entrySet()) {
-                createXMLStatsByMap(entry.getKey(), entry.getValue());
+                createXMLStatsByMap(entry.getKey(), entry.getValue(), outputDirectoryPath);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void createXMLStatsByMap(String fieldName, Map<String, Integer> map) throws JsonProcessingException {
+    public static void createXMLStatsByMap(String fieldName, Map<String, Integer> map, String outputDirectoryPath) throws JsonProcessingException {
         XmlMapper xmlMapper = new XmlMapper();
 
-        createDirectoryIfNotExists("src/main/resources/xml/");
+        createDirectoryIfNotExists(outputDirectoryPath);
 
-        String filePath = "src/main/resources/xml/statistics_by_" + fieldName + ".xml";
+        String filePath = outputDirectoryPath + fieldName + ".xml";
 
         try {
             writeXMLToFile(filePath, map, xmlMapper);
@@ -42,11 +43,11 @@ public class XMLConverter {
         }
     }
 
-    private static void createDirectoryIfNotExists(String directoryPath) {
-        File directory = new File(directoryPath);
+    static void createDirectoryIfNotExists(String outputDirectoryPath) {
+        File directory = new File(outputDirectoryPath);
         if (!directory.exists()) {
             if (!directory.mkdirs()) {
-                System.err.println("Failed to create directory: " + directoryPath);
+                System.err.println("Failed to create directory: " + outputDirectoryPath);
             }
         }
     }

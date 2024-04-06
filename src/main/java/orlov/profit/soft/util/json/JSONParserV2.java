@@ -54,18 +54,6 @@ public class JSONParserV2 {
         }
     }
 
-    private static void processResult(
-            CompletableFuture<ConcurrentHashMap<String, ConcurrentHashMap<String, Integer>>> cityNamesFuture) {
-        try {
-            ConcurrentHashMap<String, ConcurrentHashMap<String, Integer>> map = cityNamesFuture.get();
-            for (Map.Entry<String, ConcurrentHashMap<String, Integer>> entry : map.entrySet()) {
-                System.out.println(entry.getKey() + ":" + entry.getValue());
-            }
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-    }
-
     private static void shutdownForkJoinPool(ForkJoinPool forkJoinPool) {
         forkJoinPool.shutdown();
     }
