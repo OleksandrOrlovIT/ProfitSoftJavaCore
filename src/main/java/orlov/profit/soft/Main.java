@@ -22,6 +22,11 @@ public class Main {
         int threads = 8;
         try {
             threads = scanner.nextInt();
+            if(threads < 1 || threads > 8){
+                threads = 8;
+                System.out.println("Wrong input number of threads should be a number from 1 to 8\n" +
+                        "Using default value of 8");
+            }
         } catch (Exception e){
             System.out.println("Wrong input number of threads should be a number from 1 to 8\n" +
                     "Using default value of 8");
