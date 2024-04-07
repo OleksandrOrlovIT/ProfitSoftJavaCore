@@ -11,6 +11,11 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+/**
+ * A supplier class that provides a stream of objects of a given type from a JSON array in an input stream.
+ *
+ * @param <T> The type of objects in the JSON array.
+ */
 public class InputStreamJsonArrayStreamDataSupplier<T> implements Supplier<Stream<T>> {
 
     private ObjectMapper mapper = new ObjectMapper();
@@ -18,6 +23,13 @@ public class InputStreamJsonArrayStreamDataSupplier<T> implements Supplier<Strea
     private Class<T> type;
     private InputStream data;
 
+    /**
+     * Constructs a new InputStreamJsonArrayStreamDataSupplier.
+     *
+     * @param type The class of objects in the JSON array.
+     * @param data The input stream containing JSON data.
+     * @throws IOException If an I/O error occurs while creating the JSON parser.
+     */
     public InputStreamJsonArrayStreamDataSupplier(Class<T> type, InputStream data) throws IOException {
         this.type = type;
         this.data = data;
@@ -33,6 +45,11 @@ public class InputStreamJsonArrayStreamDataSupplier<T> implements Supplier<Strea
         }
     }
 
+    /**
+     * Retrieves a stream of objects from the JSON array in the input stream.
+     *
+     * @return A stream of objects.
+     */
     @Override
     public Stream<T> get() {
         try {

@@ -12,26 +12,50 @@ import java.time.Year;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Represents a city entity with its properties.
+ */
+
 @Setter
 @Getter
 @NoArgsConstructor
 public class City {
 
+    /**
+     * The name of the city.
+     */
     private String cityName;
 
+    /**
+     * The country to which the city belongs.
+     */
     @JsonDeserialize(using = CountryDeserializer.class)
     private Country country;
 
+    /**
+     * The population of the city.
+     */
     private int cityPopulation;
 
-    //kilometers
+    /**
+     * The area of the city in kilometers.
+     */
     private double cityArea;
 
+    /**
+     * The year the city was founded.
+     */
     @JsonDeserialize(using = YearDeserializer.class)
     private Year foundedAt;
 
+    /**
+     * The list of languages spoken in the city.
+     */
     private List<String> languages;
 
+    /**
+     * Constructs a new City object.
+     * */
     @Builder
     public City(String cityName, Country country, int cityPopulation, double cityArea, Year foundedAt, List<String> languages) {
         this.cityName = cityName;
@@ -42,6 +66,12 @@ public class City {
         this.languages = languages;
     }
 
+    /**
+     * Compares this City object to another object for equality.
+     *
+     * @param object The object to compare with.
+     * @return True if the objects are equal, false otherwise.
+     */
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
@@ -57,6 +87,11 @@ public class City {
         return Objects.equals(languages, city.languages);
     }
 
+    /**
+     * Generates a hash code for this City object.
+     *
+     * @return The hash code value for this object.
+     */
     @Override
     public int hashCode() {
         int result;
@@ -71,6 +106,11 @@ public class City {
         return result;
     }
 
+    /**
+     * Returns a string representation of the City object.
+     *
+     * @return A string representation of the object.
+     */
     @Override
     public String toString() {
         return "City{" +

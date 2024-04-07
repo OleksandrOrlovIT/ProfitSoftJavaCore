@@ -11,6 +11,9 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A utility class for populating JSON files with cities data.
+ */
 public class PopulateJSONCities {
 
     private static final Country ukraine = Country.builder().countryName("Ukraine").build();
@@ -18,6 +21,14 @@ public class PopulateJSONCities {
     private static final Country germany = Country.builder().countryName("Germany").build();
     private static final Country france = Country.builder().countryName("France").build();
 
+    /**
+     * Populates a JSON file with city data.
+     *
+     * @param filePath The path to the JSON file to populate.
+     * @param times    The number of times to repeat the city data in the file.
+     * @param cities   The list of cities to populate the file with.
+     * @throws IOException If an I/O error occurs during file writing.
+     */
     public static void populateFileWithCities(String filePath, int times, List<City> cities) throws IOException {
         File file = new File(filePath);
         if (file.exists()) {

@@ -14,8 +14,21 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 
+/**
+ * A utility class for parsing JSON data from multiple files in parallel and extracting statistics.
+ */
 public class JSONParserV2 {
 
+    /**
+     * Parses JSON data from multiple files in parallel and extracts statistics.
+     *
+     * @param numberOfThreads The number of threads to use for parallel processing.
+     * @param directoryPath   The path to the directory containing JSON files.
+     * @param fieldNames      The list of field names to extract statistics for.
+     * @return A CompletableFuture containing the extracted statistics.
+     * @throws ExecutionException   If an error occurs during execution.
+     * @throws InterruptedException If the execution is interrupted.
+     */
     public static CompletableFuture<ConcurrentHashMap<String, ConcurrentHashMap<String, Integer>>> runInParallel
             (int numberOfThreads, String directoryPath, List<String> fieldNames) {
         ForkJoinPool forkJoinPool = new ForkJoinPool(numberOfThreads);
@@ -58,6 +71,13 @@ public class JSONParserV2 {
         forkJoinPool.shutdown();
     }
 
+    /**
+     * Reads city statistics from JSON data.
+     *
+     * @param cityStream     The stream of City objects from JSON data.
+     * @param fieldsToCheck  The list of field names to extract statistics for.
+     * @return A ConcurrentHashMap containing the extracted statistics.
+     */
     public static ConcurrentHashMap<String, ConcurrentHashMap<String, Integer>> readCityStats(
             InputStreamJsonArrayStreamDataSupplier<City> cityStream,
             List<String> fieldsToCheck) {

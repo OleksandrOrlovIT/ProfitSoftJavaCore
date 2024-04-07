@@ -15,14 +15,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * A utility class for parsing JSON data into Java objects and vice versa.
+ */
 public class JSONParser {
 
     private final JsonFactory jsonFactory;
 
+    /**
+     * Constructs a new JSONParser object.
+     */
     public JSONParser() {
         this.jsonFactory = new JsonFactory();
     }
 
+    /**
+     * Creates a JSON representation of a City object.
+     *
+     * @param city The City object to be converted to JSON.
+     * @return The JSON representation of the City object.
+     * @throws IOException If an I/O error occurs during JSON creation.
+     */
     public String createCityJson(City city) throws IOException {
         Objects.requireNonNull(city, "City can't be null");
 
@@ -81,6 +94,12 @@ public class JSONParser {
         jsonGenerator.writeEndArray();
     }
 
+    /**
+     * Retrieves a City object from a JSON string.
+     *
+     * @param input The JSON string representing the City object.
+     * @return The City object parsed from the JSON string.
+     */
     public City getCityFromJson(String input) {
         City city = new City();
         try (JsonParser jParser = createJsonParser(input)) {

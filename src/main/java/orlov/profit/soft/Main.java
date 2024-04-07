@@ -7,6 +7,14 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
+    /**
+     * @param args
+     * main(String[] args) is used to get input data of
+     * threads - number of threads
+     * inputDirPath - path to directory with json files
+     * fieldNames - list of fieldNames
+     * inputDirPath - path to directory where xml files will be saved
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome to JSON file to XML statistics application");
